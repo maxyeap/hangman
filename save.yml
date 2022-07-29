@@ -1,0 +1,33 @@
+--- &1 !ruby/object:Game
+players:
+- !ruby/object:HumanPlayer
+  name: Human
+  numbers_of_balloons: 5
+  correct_guess:
+  - t
+  - _
+  - _
+  - _
+  - _
+  - _
+  - _
+  - e
+  incorrect_guess: []
+- !ruby/object:ComputerPlayer
+  name: Computer
+  numbers_of_balloons: 4
+  correct_guess:
+  - _
+  - _
+  - _
+  - _
+  - _
+  - _
+  - _
+  - _
+  incorrect_guess:
+  - c
+correct_word: triangle
+current_player_id: 1
+loader_saver: !ruby/object:SaveGame
+  game: *1
