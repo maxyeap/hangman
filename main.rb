@@ -153,7 +153,7 @@ class SaveGame
     language_code = "en-us"
     word_id = letter
     url = URI("https://od-api.oxforddictionaries.com/api/v2/" + endpoint + "/" + language_code + "/" + word_id.downcase)
-    r = Net::HTTP.get_response(url, headers = {"app_id": app_id, "app_key": app_key})
+    r = Net::HTTP.get_response(url, {"app_id": app_id, "app_key": app_key})
     data = JSON.parse r.body.gsub('=>', ':')
     begin
       puts "CLUE: #{data['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['definitions'][0]}"
@@ -164,24 +164,11 @@ class SaveGame
   end
 end
 
-
-class HumanPlayer
-  attr_reader :correct_guess, :numbers_of_balloons, :incorrect_guess, :name
-
+class Player
   def initialize
-    @name = 'Human'
     @numbers_of_balloons = 5
     @correct_guess = []
     @incorrect_guess = []
-  end
-
-  def input_guess
-    puts 'Human, please input your guess'
-    input = gets.chomp.downcase
-    return input unless input.length != 1 || input.match?(/[[:alpha:]]/) == false
-
-    puts 'Input is not valid. Please try again.'
-    input_guess
   end
 
   def pop_balloon
@@ -198,14 +185,30 @@ class HumanPlayer
   end
 end
 
-class ComputerPlayer
+class HumanPlayer < Player
   attr_reader :correct_guess, :numbers_of_balloons, :incorrect_guess, :name
 
   def initialize
+    super
+    @name = 'Human'
+  end
+
+  def input_guess
+    puts 'Human, please input your guess'
+    input = gets.chomp.downcase
+    return input unless input.length != 1 || input.match?(/[[:alpha:]]/) == false
+
+    puts 'Input is not valid. Please try again.'
+    input_guess
+  end
+end
+
+class ComputerPlayer < Player
+  attr_reader :correct_guess, :numbers_of_balloons, :incorrect_guess, :name
+
+  def initialize
+    super
     @name = 'Computer'
-    @numbers_of_balloons = 5
-    @correct_guess = []
-    @incorrect_guess = []
   end
 
   def input_guess
@@ -216,19 +219,6 @@ class ComputerPlayer
     end
     puts "Computer guess is #{c_guess}"
     c_guess
-  end
-
-  def pop_balloon
-    @numbers_of_balloons -= 1
-    puts "Wrong! #{@name}, you have #{@numbers_of_balloons} balloons left."
-  end
-
-  def update_correct_guess(array)
-    @correct_guess = array
-  end
-
-  def update_incorrect_guess(input)
-    @incorrect_guess.push(input)
   end
 end
 
